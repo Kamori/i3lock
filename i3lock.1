@@ -25,10 +25,12 @@ i3lock \- improved screen locker
 .IR color \|]
 .RB [\|\-t\|]
 .RB [\|\-p
-.IR pointer\|]
+.IR pointer \|]
 .RB [\|\-u\|]
 .RB [\|\-e\|]
 .RB [\|\-I\|]
+.RB [\|\-s
+.IR string \|]
 
 .SH DESCRIPTION
 .B i3lock
@@ -105,7 +107,9 @@ does not hide your mouse pointer. If you specify "win",
 .B i3lock
 displays a hardcoded Windows-Pointer (thus enabling you to mess with your
 friends by using a screenshot of a Windows desktop as a locking-screen).
-
+.TP
+.BI \-s\ \'string\ '\fR,\  \fB\-\-string=\'string\'
+Allows you to print a string of text onto your lock screen. clean simple.
 .TP
 .B \-e, \-\-ignore-empty-password
 When an empty password is provided by the user, do not validate
