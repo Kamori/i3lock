@@ -51,6 +51,7 @@ static xcb_cursor_t cursor;
 static pam_handle_t *pam_handle;
 int input_position = 0;
 /* Holds the password you enter (in UTF-8). */
+char *flg_string = NULL;
 static char password[512];
 static bool beep = false;
 bool debug_mode = false;
@@ -652,6 +653,7 @@ static void raise_loop(xcb_window_t window) {
 int main(int argc, char *argv[]) {
     char *username;
     char *image_path = NULL;
+    //char *flg_string = NULL;
     int ret;
     struct pam_conv conv = {conv_callback, NULL};
     int curs_choice = CURS_NONE;
@@ -668,6 +670,7 @@ int main(int argc, char *argv[]) {
         {"help", no_argument, NULL, 'h'},
         {"no-unlock-indicator", no_argument, NULL, 'u'},
         {"image", required_argument, NULL, 'i'},
+        {"flg_string", required_argument, NULL, 's'},
         {"tiling", no_argument, NULL, 't'},
         {"ignore-empty-password", no_argument, NULL, 'e'},
         {"inactivity-timeout", required_argument, NULL, 'I'},
@@ -677,7 +680,7 @@ int main(int argc, char *argv[]) {
     if ((username = getenv("USER")) == NULL)
         errx(EXIT_FAILURE, "USER environment variable not set, please set it.\n");
 
-    char *optstring = "hvnbdc:p:ui:teI:";
+    char *optstring = "hvnbdc:p:uis:teI:";
     while ((o = getopt_long(argc, argv, optstring, longopts, &optind)) != -1) {
         switch (o) {
         case 'v':
@@ -713,6 +716,9 @@ int main(int argc, char *argv[]) {
         case 'u':
             unlock_indicator = false;
             break;
+        case 's':
+            flg_string = strdup(optarg);
+            break;
         case 'i':
             image_path = strdup(optarg);
             break;
@@ -737,7 +743,7 @@ int main(int argc, char *argv[]) {
             break;
         default:
             errx(EXIT_FAILURE, "Syntax: i3lock [-v] [-n] [-b] [-d] [-c color] [-u] [-p win|default]"
-            " [-i image.png] [-t] [-e] [-I]"
+            " [-i image.png] [-t] [-e] [-I] [-s 'string of text']"
             );
         }
     }

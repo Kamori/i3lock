@@ -47,6 +47,7 @@ extern bool unlock_indicator;
 /* A Cairo surface containing the specified image (-i), if any. */
 extern cairo_surface_t *img;
 
+extern char *flg_string;
 /* Whether the image should be tiled. */
 extern bool tile;
 /* The background color to use (in hex). */
@@ -101,9 +102,29 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
      * depending on the amount of screens) unlock indicators on. */
     cairo_surface_t *output = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, button_diameter_physical, button_diameter_physical);
     cairo_t *ctx = cairo_create(output);
-
+    cairo_t *ctx1 = cairo_create(output);
     cairo_surface_t *xcb_output = cairo_xcb_surface_create(conn, bg_pixmap, vistype, resolution[0], resolution[1]);
     cairo_t *xcb_ctx = cairo_create(xcb_output);
+
+
+
+            cairo_text_extents_t extents;
+            double x, y;
+
+            cairo_set_source_rgb(ctx1, 0, 0, 0);
+            cairo_set_font_size(ctx1, 12.0);
+
+            cairo_text_extents(ctx1, flg_string, &extents);
+            x = BUTTON_CENTER - ((extents.width / 2) + extents.x_bearing) - 12;
+            y = BUTTON_CENTER - ((extents.height / 2) + extents.y_bearing) + 75 ;
+
+            cairo_move_to(ctx1, x, y);
+            cairo_show_text(ctx1, flg_string);
+            cairo_close_path(ctx1);
+
+
+
+
 
     if (img) {
         if (!tile) {
@@ -211,6 +232,7 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
             cairo_show_text(ctx, text);
             cairo_close_path(ctx);
         }
+
 
         /* After the user pressed any valid key or the backspace key, we
          * highlight a random part of the unlock indicator to confirm this
